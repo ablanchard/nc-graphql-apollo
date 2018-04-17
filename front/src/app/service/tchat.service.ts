@@ -5,17 +5,12 @@ import gql from 'graphql-tag'
 @Injectable()
 export class TchatService {
 
-    private messageQuery: QueryRef<any>
-
-    constructor(public apollo: Apollo) {
-        this.messageQuery = this.apollo.watchQuery({
-            query: GET_REQUEST
-        })
-        this.subscribeMessages()
-    }
+    constructor(public apollo: Apollo) {}
 
     getMessages() {
-        return this.messageQuery
+        return this.apollo.watchQuery({
+            query: GET_REQUEST
+        })
     }
 
     saveMessage(message) {
@@ -26,35 +21,11 @@ export class TchatService {
                 const data: any = store.readQuery({ query: GET_REQUEST })
                 data.getMessages.push(saveMessage)
                 store.writeQuery({ query: GET_REQUEST, data })
-            },
-            optimisticResponse: {
-                __typename: 'Mutation',
-                saveMessage: {
-                    __typename: "Message",
-                    ...message,
-                    sender: {
-                        __typename: "Sender",
-                        ...message.sender
-                    },
-                    status: "PENDING",
-                    date: Date.now()
-                }
             }
         })
     }
 
-    subscribeMessages() {
-        this.messageQuery.subscribeToMore({
-            document: SUBSCRIBE_MESSAGES,
-            updateQuery: (prev: any, { subscriptionData }) => {
-                let messages = prev.getMessages.slice(0)
-                messages.push(subscriptionData.data.subscribeMessages)
-                return {
-                    getMessages: messages
-                }
-            }
-        })
-    }
+    subscribeMessages() {}
 }
 
 const GET_REQUEST = gql`
@@ -87,18 +58,4 @@ mutation saveMessage($message: MessageInput!) {
     }
 }`
 
-const SUBSCRIBE_MESSAGES = gql`
-subscription {
-  subscribeMessages {
-    sender {
-        pseudo
-        firstName
-        lastName
-    }
-    content
-    localisation
-    date
-    status
-  }
-}
-`
+const SUBSCRIBE_MESSAGES = ``
