@@ -10,34 +10,8 @@ import { OperationDefinitionNode } from 'graphql';
 
 @Injectable()
 export class GraphqlService {
-  constructor(
-    apollo: Apollo,
-    httpLink: HttpLink,
-    inMemoryCache: InMemoryCache,
-  ) {
-    // Create an http link:
-    const http = httpLink.create({
-      uri: 'api/graphql',
-    })
 
-    // Create a WebSocket link:
-    const ws = new WebSocketLink({
-      uri: environment.webSocket
-    })
-
-    const link = split(
-      // split based on operation type
-      ({ query }) => {
-        const { kind, operation } = (getMainDefinition(query) as OperationDefinitionNode)
-        return kind === 'OperationDefinition' && operation === 'subscription'
-      },
-      ws,
-      http,
-    )
-
-    apollo.create({
-      link: link,
-      cache: new InMemoryCache(),
-    })
+  constructor(apollo: Apollo, httpLink: HttpLink, inMemoryCache: InMemoryCache) {
+    // INSERT HERE APOLLO CLIENT CREATION
   }
 }

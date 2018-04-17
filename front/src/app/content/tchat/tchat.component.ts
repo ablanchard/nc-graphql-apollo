@@ -16,27 +16,11 @@ export class TchatComponent implements OnInit {
     constructor(private tchatService: TchatService) { }
 
     ngOnInit() {
-        this.tchatService.getMessages().valueChanges
-        .subscribe(({ data: { getMessages } }: any) => {
-            this.messages = getMessages
-        })
+        this.messages = this.tchatService.getMessages()
     }
 
     sendMessage() {
-        this.spamGuard = true
-        const message = {
-            sender: {
-                pseudo: 'Developer Man',
-                firstName: 'Jean-Michel',
-                lastName: 'Graphi'
-            },
-            content: this.messageContent,
-            localisation: 'Nantes',
-            status: 'PENDING'
-        }
-        this.tchatService.saveMessage(message).subscribe(() => {
-            this.spamGuard = false
-            this.messageContent = ""
-        })
+        this.spamGuard = false
+        this.messageContent = ""
     }
 }
