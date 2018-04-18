@@ -14,3 +14,4 @@ services:
       - ./back:/usr/src/back
     ports: # dev purpose only
       - 3000:3000
+      - 3001:3001
