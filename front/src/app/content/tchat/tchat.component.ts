@@ -24,6 +24,6 @@ export class TchatComponent implements OnInit {
 
     sendMessage() {
         this.spamGuard = false
-        const message = ""
+        this.messageContent = ""
     }
 }
