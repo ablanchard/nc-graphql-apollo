@@ -8,27 +8,56 @@ export class TchatService {
     constructor(public apollo: Apollo) {
     }
 
+  fetchAll = gql`{
+        getMessages {
+        id
+        date
+        sender {
+          pseudo
+          firstName
+          lastName
+        }
+        content
+        localisation
+        status
+        }
+      }`;
+
     getMessages() {
-      return this.apollo.query({
-        query: gql`{
-          getMessages {
-          id
-          date
-          sender {
-            pseudo
-            firstName
-            lastName
-          }
-          content
-          localisation
-          status
-          }
-        }`
+
+
+      return this.apollo.watchQuery({
+        query: this.fetchAll
         }
       )
     }
 
-    saveMessage(message) { }
+    saveMessage(message) {
+      return this.apollo.mutate(
+        {
+          mutation: gql`
+          mutation SaveMessage($messageInput: MessageInput!) {
+            saveMessage(message: $messageInput) {
+              content
+              localisation
+              status
+              sender {
+                pseudo
+                firstName
+                lastName
+              }
+            }
+          }
+          `,
+          variables: {messageInput: message},
+          refetchQueries: [{
+            query: this.fetchAll
+          }]
+          }
+
+      )
+
+    }
 
     subscribeMessages() { }
 }
