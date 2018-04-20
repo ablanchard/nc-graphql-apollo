@@ -8,9 +8,9 @@ La propriété update attend pour valeur une fonction de la forme suivante : `(s
 
 Le premier argument est un objet qui vous permettra d’accéder au store tandis que le second argument correspond aux données reçu par la requête. La fonction est une fonction callback automatiquement exécuté par apollo une fois la requête de mutation terminée. Vous n’avez donc pas à vous soucier de renseigner ces paramètres, apollo s’en charge pour vous.
 
-L’objet store possède deux fonctions qui nous intéresse:
+L’objet store possède deux fonctions qui nous intéressent:
 
-* `readQuery` : Permet d'accéder au store via la requête graphql voulu.
+* `readQuery` : Permet d'accéder au store via la requête graphql voulue.
 * `writeQuery` : Permet d'écrire dans le store des résultats pour une requête donnée. Avec cette fonction vous allez en quelques sortes simuler la réponse.
 
-Aidez vous du lien suivant pour utilisé la propriété update dans votre code : https://www.apollographql.com/docs/angular/features/caching.html#updating-the-cache-after-a-mutation
+Aidez vous du lien suivant pour utiliser la propriété `update` dans votre code : https://www.apollographql.com/docs/angular/features/caching.html#updating-the-cache-after-a-mutation
