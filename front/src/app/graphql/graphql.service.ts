@@ -12,6 +12,9 @@ import { OperationDefinitionNode } from 'graphql';
 export class GraphqlService {
 
   constructor(apollo: Apollo, httpLink: HttpLink, inMemoryCache: InMemoryCache) {
-    // INSERT HERE APOLLO CLIENT CREATION
+    apollo.create({
+      link: httpLink.create({ uri: '/api/graphql' }),
+      cache: inMemoryCache,
+    })
   }
 }

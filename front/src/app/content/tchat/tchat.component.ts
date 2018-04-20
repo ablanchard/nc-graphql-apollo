@@ -16,7 +16,11 @@ export class TchatComponent implements OnInit {
     constructor(private tchatService: TchatService) { }
 
     ngOnInit() {
-        this.messages = this.tchatService.getMessages()
+        this.tchatService.getMessages()
+          .subscribe(
+            (next : any) => this.messages = next.data.getMessages,
+            (error) => console.log(error)
+          )
     }
 
     sendMessage() {

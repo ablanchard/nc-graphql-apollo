@@ -5,9 +5,28 @@ import gql from 'graphql-tag'
 @Injectable()
 export class TchatService {
 
-    constructor(public apollo: Apollo) { }
+    constructor(public apollo: Apollo) {
+    }
 
-    getMessages() { return MESSAGES }
+    getMessages() {
+      return this.apollo.query({
+        query: gql`{
+          getMessages {
+          id
+          date
+          sender {
+            pseudo
+            firstName
+            lastName
+          }
+          content
+          localisation
+          status
+          }
+        }`
+        }
+      )
+    }
 
     saveMessage(message) { }
 
