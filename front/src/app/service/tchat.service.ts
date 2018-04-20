@@ -5,34 +5,21 @@ import gql from 'graphql-tag'
 @Injectable()
 export class TchatService {
 
+  private messageQuery: QueryRef<any> ;
+
     constructor(public apollo: Apollo) {
+      this.messageQuery = this.apollo.watchQuery({ query: GET_REQUEST });
+      this.subscribeMessages()
     }
 
     getMessages() {
-      return this.apollo.watchQuery({
-        query: GET_REQUEST
-        }
-      )
+      return this.messageQuery
     }
 
     saveMessage(message) {
       return this.apollo.mutate(
         {
-          mutation: gql`
-          mutation SaveMessage($messageInput: MessageInput!) {
-            saveMessage(message: $messageInput) {
-              content
-              localisation
-              status
-              date
-              sender {
-                pseudo
-                firstName
-                lastName
-              }
-            }
-          }
-          `,
+          mutation: SAVE_REQUEST,
           variables: {messageInput: message},
           update: (store,  { data: { saveMessage } }) => {
             const data: any = store.readQuery({query: GET_REQUEST});
@@ -61,7 +48,20 @@ export class TchatService {
 
     }
 
-    subscribeMessages() { }
+
+  subscribeMessages() {
+      this.messageQuery.subscribeToMore({
+        document: SUBSCRIBE_MESSAGES,
+        updateQuery: (prev: any, {subscriptionData}) => {
+          let messages = prev.getMessages.slice(0)
+          messages.push(subscriptionData.data.subscribeMessages)
+          return {
+            getMessages: messages
+          }
+        }
+      })
+
+    }
 }
 
 const GET_REQUEST = gql`{
@@ -78,45 +78,33 @@ const GET_REQUEST = gql`{
         }
       }`;
 
-const SAVE_REQUEST = ``
+const SAVE_REQUEST = gql`
+          mutation SaveMessage($messageInput: MessageInput!) {
+            saveMessage(message: $messageInput) {
+              content
+              localisation
+              status
+              date
+              sender {
+                pseudo
+                firstName
+                lastName
+              }
+            }
+          }
+          `;
 
-const SUBSCRIBE_MESSAGES = ``
-
-const MESSAGES = [
-    {
-        "id": "0",
-        "date": "1523999166295",
-        "sender": {
-            "pseudo": "Canard Man",
-            "firstName": "Frédéric",
-            "lastName": "Molas"
-        },
-        "content": "Coin Coin",
-        "localisation": "Duckpound",
-        "status": "OK"
-    },
-    {
-        "id": "1",
-        "date": "1523999199456",
-        "sender": {
-            "pseudo": "Developer Man",
-            "firstName": "Jean-Michel",
-            "lastName": "Graphi"
-        },
-        "content": "Salut mon canard...",
-        "localisation": "Nantes",
-        "status": "OK"
-    },
-    {
-        "id": "1",
-        "date": "1523999199456",
-        "sender": {
-            "pseudo": "Developer Man",
-            "firstName": "Jean-Michel",
-            "lastName": "Graphi"
-        },
-        "content": "J'ai besoin d'un coup de main !",
-        "localisation": "Nantes",
-        "status": "OK"
+const SUBSCRIBE_MESSAGES = gql`subscription {
+  subscribeMessages {
+    sender {
+        pseudo
+        firstName
+        lastName
     }
-]
+    content
+    localisation
+    date
+    status
+  }
+}`;
+

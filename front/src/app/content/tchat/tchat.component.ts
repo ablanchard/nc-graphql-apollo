@@ -13,7 +13,9 @@ export class TchatComponent implements OnInit {
     public messageContent = ""
     public messages = []
 
-    constructor(private tchatService: TchatService) { }
+    constructor(private tchatService: TchatService) {
+
+    }
 
     ngOnInit() {
         this.tchatService.getMessages().valueChanges
