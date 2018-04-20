@@ -8,26 +8,9 @@ export class TchatService {
     constructor(public apollo: Apollo) {
     }
 
-  fetchAll = gql`{
-        getMessages {
-        id
-        date
-        sender {
-          pseudo
-          firstName
-          lastName
-        }
-        content
-        localisation
-        status
-        }
-      }`;
-
     getMessages() {
-
-
       return this.apollo.watchQuery({
-        query: this.fetchAll
+        query: GET_REQUEST
         }
       )
     }
@@ -41,6 +24,8 @@ export class TchatService {
               content
               localisation
               status
+              date
+              id
               sender {
                 pseudo
                 firstName
@@ -50,9 +35,14 @@ export class TchatService {
           }
           `,
           variables: {messageInput: message},
-          refetchQueries: [{
-            query: this.fetchAll
-          }]
+          update: (store,  { data: { saveMessage } }) => {
+            const data: any = store.readQuery({query: GET_REQUEST});
+            data.getMessages.push(saveMessage)
+            store.writeQuery({
+              query: GET_REQUEST,
+              data
+            })
+          }
           }
 
       )
@@ -62,7 +52,20 @@ export class TchatService {
     subscribeMessages() { }
 }
 
-const GET_REQUEST = ``
+const GET_REQUEST = gql`{
+        getMessages {
+        id
+        date
+        sender {
+          pseudo
+          firstName
+          lastName
+        }
+        content
+        localisation
+        status
+        }
+      }`;
 
 const SAVE_REQUEST = ``
 
