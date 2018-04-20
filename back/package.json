@@ -4,7 +4,7 @@
   "description": "This is a codelab graphql apollo.",
   "scripts": {
     "test": "jest --forceExit",
-    "start": "NODE_ENV=dev nodemon --watch \"src/**/*.js\" --exec \"webpack --colors && node --inspect dist/server.js\"",
+    "start": "nodemon --watch \"src/**/*.js\" --exec \"webpack --colors && node --inspect dist/server.js\"",
     "clean": "rimraf dist",
     "prestart": "npm run clean && copyfiles ./config.js dist"
   },
