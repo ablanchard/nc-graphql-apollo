@@ -1,5 +1,5 @@
 module.exports = {
-    latency: 0, // millisecond
+    latency: 2000, // millisecond
     enableSuperCoinFeature: false,
     server: {
         port: 3000,

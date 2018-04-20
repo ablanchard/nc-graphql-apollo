@@ -25,7 +25,6 @@ export class TchatService {
               localisation
               status
               date
-              id
               sender {
                 pseudo
                 firstName
@@ -42,6 +41,19 @@ export class TchatService {
               query: GET_REQUEST,
               data
             })
+          },
+          optimisticResponse: {
+            __typename: "Mutation",
+            saveMessage: {
+              __typename: "Message",
+              ...message,
+              date: Date.now(),
+              sender: {
+                __typename: "Sender",
+                ...message.sender
+              }
+            }
+
           }
           }
 
@@ -54,7 +66,6 @@ export class TchatService {
 
 const GET_REQUEST = gql`{
         getMessages {
-        id
         date
         sender {
           pseudo
